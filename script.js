@@ -3,7 +3,7 @@
 // @namespace    http://goingtocamp.com
 // @version      2024-11-12
 // @description  Try to auto reserve campsites
-// @author       You
+// @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
