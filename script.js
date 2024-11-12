@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    http://goingtocamp.com
-// @version      2024-11-14
+// @version      2024-11-15
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -46,13 +46,13 @@
             }
 
             $('#clock').html(
-                'Current Time: <strong>'+hours + ":" + minutes + ":" + seconds+'</strong>'
+                'Current Time: <strong>'+hours + ":" + minutes + ":" + seconds+'</strong> <i>Pacific Standard Time</i>'
             );
         }, 500);
     }
 
     function loadUI(){
-        $('body').prepend('<div style="padding:10px;border-bottom:5px solid #ff0000;"><strong>Please make sure to pre select the correct camsite now.</strong><p>Make sure to be on the computer by 7:10 AM to complete the reservation!</p><div id="clock"></div> <div>Will Fire: <strong>6:59:00 AM - 7:02:59 AM</strong></div> </div>');
+        $('body').prepend('<div style="padding:10px;border-bottom:5px solid #ff0000;"><strong>Please make sure to pre select the correct camsite now.</strong><p>Make sure to be on the computer by 7:10 AM <i>Pacific Standard Time</i> to complete the reservation!</p><div id="clock"></div> <div>Will Fire: <strong>6:59:00 AM</strong> - <strong>7:02:59 AM</strong> <i>Pacific Standard Time</i></div> </div>');
     }
 
 })();
