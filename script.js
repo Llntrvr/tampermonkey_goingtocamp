@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      2024111309134
+// @version      2024111309135
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -48,7 +48,7 @@
             );
         } else {
             $('div#pleaseselect').html(
-                '<strong style="color:#ff0000;">Please make sure to pre select the correct campsite now!</strong>'
+                '<strong style="color:#ff0000;">Please make sure to select the correct campsite below now!</strong>'
             );
         }
     }
