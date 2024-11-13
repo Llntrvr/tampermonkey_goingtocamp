@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      202411121859
+// @version      202411130728
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -18,6 +18,7 @@
 
     $( document ).ready(function() {
         loadUI();
+        selectCampSite();
         clock();
     });
 
@@ -25,8 +26,34 @@
     function clickEvent()
     {
         $('button#addToStay').click();
+        console.log('Click');
     }
 
+    function getCamSiteId()
+    {
+        var rawvalue = '0';
+        if( $('button#addToStay').length )
+        {
+            rawvalue = $('h2#resourceName').text();
+        }
+        return rawvalue.replace(/\D/g, "");
+    }
+
+    function selectCampSite()
+    {
+        const campsiteid = getCamSiteId();
+
+        if( $('button#addToStay').length )
+        {
+            $('div#pleaseselect').html(
+                '<strong style="color:#89CFF0;">Campsite #'+campsiteid+' has been selected!</strong>'
+            );
+        } else {
+            $('div#pleaseselect').html(
+                '<strong style="color:#ff0000;">Please make sure to pre select the correct campsite now!</strong>'
+            );
+        }
+    }
 
 
     function clock()
@@ -36,25 +63,23 @@
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             const seconds = date.getSeconds().toString().padStart(2, '0');
+            const match = hours+minutes+seconds;
 
-            if(hours == '06' && minutes <= '59')
+            if(match == '065900' && match <= '070159')
             {
-              clickEvent();
-            }
-
-            if(hours == '07' && minutes >= '02')
-            {
-              clickEvent();
+                clickEvent();
             }
 
             $('span#clock').html(
                 '<strong>'+hours + ":" + minutes + ":" + seconds+'</strong> <i>Pacific Standard Time</i>'
             );
-        }, 250);
+
+            selectCampSite();
+        }, 10);
     }
 
     function loadUI(){
-        $('body').prepend('<div style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;color:#ff0000;text-align:center;"><strong>Please make sure to pre select the correct campsite now!</strong></div><div id="notice">Make sure to be on the computer by 7:10 AM <i>Pacific Standard Time</i> to complete the reservation! <br> Current Time: <span id="clock">00:00:00 AM</span> <br> Will Fire: <strong>6:59:00 AM</strong> - <strong>7:02:59 AM</strong> <i>Pacific Standard Time</i></div> </div>');
+        $('body').prepend('<div style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice">Make sure to be on the computer by 7:10 AM <i>Pacific Standard Time</i> to complete the reservation! <br> Current Time: <span id="clock">00:00:00 AM</span> <br> Will Fire: <strong>6:59:00 AM</strong> - <strong>7:00:59 AM</strong> <i>Pacific Standard Time</i></div> </div>');
     }
 
 })();
