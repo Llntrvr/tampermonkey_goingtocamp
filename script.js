@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      202411130913
+// @version      2024111309125
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -65,6 +65,8 @@
             const seconds = date.getSeconds().toString().padStart(2, '0');
             const match = hours+minutes+seconds;
 
+            console.log('Current Time: '+hours + ":" + minutes + ":" + seconds);
+
             if(match == '065900' && match <= '070059')
             {
                 clickEvent();
@@ -75,8 +77,10 @@
             );
 
             selectCampSite();
-        }, 60000);
+        }, 1000);
     }
+
+
 
     function loadUI(){
         $('body').prepend('<div style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice">Make sure to be on the computer by 7:10 AM <i>Pacific Standard Time</i> to complete the reservation! <br> Current Time: <span id="clock">00:00:00 AM</span> <br> Will Fire: <strong>6:59:00 AM</strong> - <strong>7:00:59 AM</strong> <i>Pacific Standard Time</i></div> </div>');
