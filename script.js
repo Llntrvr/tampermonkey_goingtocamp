@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      2024111309129
+// @version      2024111309132
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -26,12 +26,13 @@
     function clickEvent()
     {
         $('button#addToStay').click();
-        console.log('Click');
+        const campsiteid = getCamSiteId();
+        console.log('Trying to reserve campsite #'+campsiteid);
     }
 
     function getCamSiteId()
     {
-        var rawvalue = '0';
+        let rawvalue = '0';
         if( $('button#addToStay').length )
         {
             rawvalue = $('h2#resourceName').text();
