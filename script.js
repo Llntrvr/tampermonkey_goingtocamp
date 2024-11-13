@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      202411130728
+// @version      202411130913
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -65,7 +65,7 @@
             const seconds = date.getSeconds().toString().padStart(2, '0');
             const match = hours+minutes+seconds;
 
-            if(match == '065900' && match <= '070159')
+            if(match == '065900' && match <= '070059')
             {
                 clickEvent();
             }
@@ -75,7 +75,7 @@
             );
 
             selectCampSite();
-        }, 10);
+        }, 60000);
     }
 
     function loadUI(){
