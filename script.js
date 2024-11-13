@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      2024111309125
+// @version      2024111309127
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -63,11 +63,11 @@
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             const seconds = date.getSeconds().toString().padStart(2, '0');
-            const match = hours+minutes+seconds;
+            const match = match = hours+minutes+seconds;
 
             console.log('Current Time: '+hours + ":" + minutes + ":" + seconds);
 
-            if(match == '065900' && match <= '070059')
+            if(match >= '065900' && match <= '070059')
             {
                 clickEvent();
             }
