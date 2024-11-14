@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      202411140730
+// @version      202411140954
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -9,6 +9,7 @@
 // @grant        none
 // @run-at       document-end
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
+// @require      https://raw.githubusercontent.com/Llntrvr/tampermonkey_goingtocamp/refs/heads/master/HackTimer.silent.min.js
 // @updateURL    https://raw.githubusercontent.com/llntrvr/tampermonkey_goingtocamp/refs/heads/master/script.js
 // @downloadURL  https://raw.githubusercontent.com/llntrvr/tampermonkey_goingtocamp/refs/heads/master/script.js
 // ==/UserScript==
