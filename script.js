@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      202411140714
+// @version      202411140730
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -44,12 +44,14 @@
         if( $('button#addToStay').length )
         {
             $('div#pleaseselect').html(
-                '<strong style="color:#89CFF0;">Campsite #'+getCamSiteId()+' has been selected!</strong>'
+                '<strong style="color:#1a5632;">Campsite #'+getCamSiteId()+' has been selected!</strong>'
             );
+            $('div#topbanner').css('border-bottom', '5px solid #1a5632');
         } else {
             $('div#pleaseselect').html(
                 '<strong style="color:#ff0000;">Please make sure to select the correct campsite below now!</strong>'
             );
+            $('div#topbanner').css('border-bottom', '5px solid #ff0000');
         }
     }
 
@@ -71,7 +73,7 @@
             }
 
             $('span#clock').html(
-                '<strong>'+hours + ":" + minutes + ":" + seconds+'</strong> <i>Pacific Standard Time</i>'
+                '<strong>'+hours + ":" + minutes + ":" + seconds+'</strong> <i>PST</i>'
             );
 
             selectCampSite();
@@ -81,7 +83,7 @@
 
 
     function loadUI(){
-        $('body').prepend('<div style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice">Make sure to be on the computer by 7:10 AM <i>Pacific Standard Time</i> to complete the reservation! <br> Current Time: <span id="clock">00:00:00 AM</span> <br> Will Fire: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>Pacific Standard Time</i></div> </div>');
+        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to disable <strong>Calculate window occlusion on Windows</strong> in <i>chrome://flags/#calculate-native-win-occlusion</i></li><li>Make sure to be on the computer by 7:10 AM <i>PST</i> to complete the <a href="/cart" target="_blank">reservation</a>!</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span></li> <li>Will Fire: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>PST</i></li></ul></div> </div>');
     }
 
 })();
