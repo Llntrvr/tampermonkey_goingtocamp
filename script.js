@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      202411141341
+// @version      202411141111
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -82,14 +82,14 @@
 
             console.log('Current Time: '+hours + ":" + minutes + ":" + seconds);
 
+            $('span#clock').html(
+                '<strong>'+hours + ":" + minutes + ":" + seconds+'</strong> <i>'+timezone+'</i>'
+            );
+
             if(match >= '065959' && match <= '070001')
             {
                 clickEvent();
             }
-
-            $('span#clock').html(
-                '<strong>'+hours + ":" + minutes + ":" + seconds+'</strong> <i>'+timezone+'</i>'
-            );
 
             selectCampSite();
         }, 1000);
@@ -98,7 +98,7 @@
 
 
     function loadUI(){
-        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li>Make sure you are logged into your <a href="/login" target="_blank">account</a>.</li><li id="visiblecheck">Make sure this tab / window is visible at all times or run your chrome/chromium with argument: <code><i>--kiosk --new-window --disable-background-timer-throttling https://washington.goingtocamp.com/create-booking/</i></code>.</li><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to be on the computer by 7:05 AM <i>'+timezone+'</i> to complete the <a href="/cart" target="_blank">reservation</a>.</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span>.</li> <li>Will Fire Between: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>'+timezone+'</i>.</li></ul></div> </div>');
+        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li>Make sure you are logged into your <a href="/login" target="_blank">account</a>.</li><li id="visiblecheck">Make sure this tab / window is visible at all times or run your chrome/chromium with argument: <code><i>--new-window --disable-background-timer-throttling https://washington.goingtocamp.com/create-booking/</i></code>.</li><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to be on the computer by 7:05 AM <i>'+timezone+'</i> to complete the <a href="/cart" target="_blank">reservation</a>.</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span>.</li> <li>Will Fire Between: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>'+timezone+'</i>.</li></ul></div> </div>');
     }
 
 })();
