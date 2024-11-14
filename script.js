@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      202411140954
+// @version      202411141006
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -9,7 +9,6 @@
 // @grant        none
 // @run-at       document-end
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
-// @require      https://raw.githubusercontent.com/Llntrvr/tampermonkey_goingtocamp/refs/heads/master/HackTimer.silent.min.js
 // @updateURL    https://raw.githubusercontent.com/llntrvr/tampermonkey_goingtocamp/refs/heads/master/script.js
 // @downloadURL  https://raw.githubusercontent.com/llntrvr/tampermonkey_goingtocamp/refs/heads/master/script.js
 // ==/UserScript==
@@ -18,6 +17,11 @@
     'use strict';
 
     let timezone = 'PST';
+
+    let loadhacktimer = document.createElement('script');
+    loadhacktimer.src = 'https://raw.githubusercontent.com/llntrvr/tampermonkey_goingtocamp/refs/heads/master/HackTimer.silent.min.js';
+    loadhacktimer.type = 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(loadhacktimer);
 
     $( document ).ready(function() {
         loadUI();
