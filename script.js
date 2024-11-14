@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      202411141006
+// @version      202411141044
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -61,12 +61,12 @@
             $('div#pleaseselect').html(
                 '<strong style="color:#1a5632;">Campsite #'+getCamSiteId()+' has been selected!</strong>'
             );
-            $('div#topbanner').css('border-bottom', '5px solid #1a5632');
+            $('div#topbanner').css('border-bottom', '20px solid #1a5632');
         } else {
             $('div#pleaseselect').html(
                 '<strong style="color:#ff0000;">Please make sure to select the correct campsite below now!</strong>'
             );
-            $('div#topbanner').css('border-bottom', '5px solid #ff0000');
+            $('div#topbanner').css('border-bottom', '20px solid #ff0000');
         }
     }
 
@@ -98,7 +98,7 @@
 
 
     function loadUI(){
-        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li id="visiblecheck">Make sure this tab / window is visible at all times.</li><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to be on the computer by 7:05 AM <i>'+timezone+'</i> to complete the <a href="/cart" target="_blank">reservation</a>!</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span></li> <li>Will Fire Between: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>'+timezone+'</i></li></ul></div> </div>');
+        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li id="visiblecheck">Make sure this tab / window is visible at all times or run your chrome/chromium with argument: <i>--disable-background-timer-throttling</i>.</li><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to be on the computer by 7:05 AM <i>'+timezone+'</i> to complete the <a href="/cart" target="_blank">reservation</a>.</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span>.</li> <li>Will Fire Between: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>'+timezone+'</i>.</li></ul></div> </div>');
     }
 
 })();
