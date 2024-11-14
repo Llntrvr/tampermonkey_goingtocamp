@@ -18,17 +18,25 @@
 
     let timezone = 'PST';
 
-    let loadhacktimer = document.createElement('script');
-    loadhacktimer.src = 'https://raw.githubusercontent.com/llntrvr/tampermonkey_goingtocamp/refs/heads/master/HackTimer.silent.min.js';
-    loadhacktimer.type = 'text/javascript';
-    document.getElementsByTagName('head')[0].appendChild(loadhacktimer);
-
     $( document ).ready(function() {
+        visibilityCheck();
         loadUI();
         selectCampSite();
         clock();
     });
 
+    function visibilityCheck()
+    {
+        document.addEventListener('visibilitychange', () => {
+            if ( document.visibilityState === 'visible' ) {
+                console.log('Visible');
+                $('li#visiblecheck').css('color', '#000000').css('font-weight', 'normal');
+            } else {
+                console.log('Invisible');
+                $('li#visiblecheck').css('color', '#ff0000').css('font-weight', 'bold');
+            }
+        });
+    }
 
     function clickEvent()
     {
@@ -90,7 +98,7 @@
 
 
     function loadUI(){
-        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to be on the computer by 7:05 AM <i>'+timezone+'</i> to complete the <a href="/cart" target="_blank">reservation</a>!</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span></li> <li>Will Fire Between: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>'+timezone+'</i></li></ul></div> </div>');
+        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li id="visiblecheck">Make sure this tab / window is visible at all times.</li><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to be on the computer by 7:05 AM <i>'+timezone+'</i> to complete the <a href="/cart" target="_blank">reservation</a>!</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span></li> <li>Will Fire Between: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>'+timezone+'</i></li></ul></div> </div>');
     }
 
 })();
