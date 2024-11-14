@@ -17,6 +17,8 @@
 (function() {
     'use strict';
 
+    let timezone = 'PST';
+
     $( document ).ready(function() {
         loadUI();
         selectCampSite();
@@ -74,7 +76,7 @@
             }
 
             $('span#clock').html(
-                '<strong>'+hours + ":" + minutes + ":" + seconds+'</strong> <i>PST</i>'
+                '<strong>'+hours + ":" + minutes + ":" + seconds+'</strong> <i>'+timezone+'</i>'
             );
 
             selectCampSite();
@@ -84,7 +86,7 @@
 
 
     function loadUI(){
-        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to disable <strong>Calculate window occlusion on Windows</strong> in <i>chrome://flags/#calculate-native-win-occlusion</i></li><li>Make sure to be on the computer by 7:10 AM <i>PST</i> to complete the <a href="/cart" target="_blank">reservation</a>!</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span></li> <li>Will Fire: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>PST</i></li></ul></div> </div>');
+        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to be on the computer by 7:05 AM <i>'+timezone+'</i> to complete the <a href="/cart" target="_blank">reservation</a>!</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span></li> <li>Will Fire Between: <strong>6:59:59 AM</strong> - <strong>7:00:01 AM</strong> <i>'+timezone+'</i></li></ul></div> </div>');
     }
 
 })();
