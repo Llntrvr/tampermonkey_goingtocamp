@@ -36,14 +36,78 @@
     let clickCount = 0;
     let reservationAttempted = false;
     let reservationSuccess = false;
+    let uiInitialized = false;
 
     $( document ).ready(function() {
+        waitForReactAndInit();
+    });
+
+    function waitForReactAndInit()
+    {
+        // Wait for React to render initial content before injecting UI
+        const checkReady = setInterval(() => {
+            // Look for signs that React has rendered (adjust selector if needed)
+            const reactRoot = document.querySelector('#root') || document.querySelector('[data-reactroot]') || document.querySelector('.App');
+            const hasContent = reactRoot && reactRoot.children.length > 0;
+            
+            // Also check if body has substantial content
+            const bodyReady = document.body && document.body.children.length > 1;
+            
+            if (hasContent || bodyReady) {
+                clearInterval(checkReady);
+                console.log('React appears ready, initializing script...');
+                initializeScript();
+            }
+        }, 100);
+
+        // Fallback: initialize after 3 seconds regardless
+        setTimeout(() => {
+            if (!uiInitialized) {
+                console.log('Fallback initialization after timeout');
+                initializeScript();
+            }
+        }, 3000);
+    }
+
+    function initializeScript()
+    {
+        if (uiInitialized) return;
+        uiInitialized = true;
+
         visibilityCheck();
-        loadUI();
+        ensureUI();
         clock();
         selectCampSite();
         watchForSuccess();
-    });
+        watchForUIRemoval();
+    }
+
+    function watchForUIRemoval()
+    {
+        // Periodically check if our UI was removed by React re-render
+        setInterval(() => {
+            if ($('#topbanner').length === 0) {
+                console.log('UI was removed, re-injecting...');
+                injectUI();
+            }
+        }, 500);
+
+        // Also use MutationObserver for faster detection
+        const observer = new MutationObserver((mutations) => {
+            if ($('#topbanner').length === 0) {
+                console.log('UI removed detected via observer, re-injecting...');
+                injectUI();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: false });
+    }
+
+    function ensureUI()
+    {
+        if ($('#topbanner').length === 0) {
+            injectUI();
+        }
+    }
 
     function visibilityCheck()
     {
@@ -78,6 +142,7 @@
 
     function updateClickStatus()
     {
+        ensureUI();
         $('span#clickcount').html(`<strong>${clickCount}</strong>`);
         if (reservationAttempted) {
             $('span#status').html('<strong style="color:#ff8c00;">ATTEMPTING...</strong>');
@@ -97,6 +162,7 @@
     function selectCampSite()
     {
         setInterval(function() {
+            ensureUI();
             if( $('button#addToStay').length )
             {
                 $('div#pleaseselect').html(
@@ -169,6 +235,7 @@
                 if (!reservationSuccess) {
                     reservationSuccess = true;
                     console.log('Reservation may have succeeded!');
+                    ensureUI();
                     $('span#status').html('<strong style="color:#1a5632;">POSSIBLY SUCCESSFUL - CHECK CART!</strong>');
                     $('div#topbanner').css('background-color', '#90EE90');
                     // Play a sound to alert the user
@@ -213,7 +280,7 @@
         return `${hour12}:${CONFIG.targetMinute.toString().padStart(2, '0')}:${CONFIG.targetSecond.toString().padStart(2, '0')} ${ampm}`;
     }
 
-    function loadUI(){
+    function injectUI(){
         const targetTime = formatTargetTime();
         const windowInfo = `(${CONFIG.preFireSeconds}s early to ${CONFIG.postFireSeconds}s late)`;
         
