@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      20251116
+// @version      20260215
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -16,13 +16,33 @@
 (function() {
     'use strict';
 
-    const timezone = 'PST';
+    // ===== CONFIGURATION =====
+    const CONFIG = {
+        timezone: 'PST',
+        timezoneId: 'America/Los_Angeles',
+        targetHour: 7,
+        targetMinute: 0,
+        targetSecond: 0,
+        // How many seconds before target to start clicking (to account for latency)
+        preFireSeconds: 1,
+        // How many seconds after target to keep clicking
+        postFireSeconds: 3,
+        // Maximum click attempts
+        maxClicks: 50,
+        // Interval for clock/click checking (ms) - lower = more precise
+        checkInterval: 50,
+    };
+
+    let clickCount = 0;
+    let reservationAttempted = false;
+    let reservationSuccess = false;
 
     $( document ).ready(function() {
         visibilityCheck();
         loadUI();
         clock();
         selectCampSite();
+        watchForSuccess();
     });
 
     function visibilityCheck()
@@ -40,8 +60,28 @@
 
     function clickEvent()
     {
-        $('button#addToStay').click();
-        console.log('Trying to reserve campsite #'+getCamSiteId());
+        if (clickCount >= CONFIG.maxClicks) {
+            return false;
+        }
+
+        const button = $('button#addToStay');
+        if (button.length && !button.prop('disabled')) {
+            button.click();
+            clickCount++;
+            reservationAttempted = true;
+            console.log(`Click attempt #${clickCount} for campsite #${getCamSiteId()}`);
+            updateClickStatus();
+            return true;
+        }
+        return false;
+    }
+
+    function updateClickStatus()
+    {
+        $('span#clickcount').html(`<strong>${clickCount}</strong>`);
+        if (reservationAttempted) {
+            $('span#status').html('<strong style="color:#ff8c00;">ATTEMPTING...</strong>');
+        }
     }
 
     function getCamSiteId()
@@ -72,38 +112,130 @@
         }, 100);
     }
 
+    function getTargetTime()
+    {
+        const targetHHMMSS = 
+            CONFIG.targetHour.toString().padStart(2, '0') +
+            CONFIG.targetMinute.toString().padStart(2, '0') +
+            CONFIG.targetSecond.toString().padStart(2, '0');
+        return targetHHMMSS;
+    }
+
+    function isInClickWindow(hours, minutes, seconds)
+    {
+        const now = hours * 3600 + minutes * 60 + seconds;
+        const target = CONFIG.targetHour * 3600 + CONFIG.targetMinute * 60 + CONFIG.targetSecond;
+        const windowStart = target - CONFIG.preFireSeconds;
+        const windowEnd = target + CONFIG.postFireSeconds;
+
+        return now >= windowStart && now <= windowEnd;
+    }
+
     function clock()
     {
         setInterval(function() {
-            let date = new Date(new Date().toLocaleString('en', {timeZone: 'America/Los_Angeles'}));
-            //date = addSeconds(date, 1);
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            const seconds = date.getSeconds().toString().padStart(2, '0');
-            const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
-            //const match = hours+minutes+seconds+milliseconds;
-            const match = hours+minutes+seconds;
+            let date = new Date(new Date().toLocaleString('en', {timeZone: CONFIG.timezoneId}));
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const seconds = date.getSeconds();
+            const milliseconds = date.getMilliseconds();
 
-            console.log('Current Time: '+hours + ":" + minutes + ":" + seconds +"."+milliseconds);
+            const hoursStr = hours.toString().padStart(2, '0');
+            const minutesStr = minutes.toString().padStart(2, '0');
+            const secondsStr = seconds.toString().padStart(2, '0');
+            const millisecondsStr = milliseconds.toString().padStart(3, '0');
 
             $('span#clock').html(
-                '<strong>'+hours + ":" + minutes + ":" + seconds+'.'+milliseconds+'</strong> <i>'+timezone+'</i>'
+                '<strong>'+hoursStr + ":" + minutesStr + ":" + secondsStr+'.'+millisecondsStr+'</strong> <i>'+CONFIG.timezone+'</i>'
             );
 
-            if(match == '065959')
-            {
+            // Check if we're in the click window
+            if (isInClickWindow(hours, minutes, seconds) && !reservationSuccess) {
                 clickEvent();
             }
-        }, 1000);
+        }, CONFIG.checkInterval);
     }
 
-    function addSeconds(date, seconds) {
-        date.setSeconds(date.getSeconds() + seconds);
-        return date;
+    function watchForSuccess()
+    {
+        // Watch for page changes that indicate success
+        const observer = new MutationObserver((mutations) => {
+            // Check for common success indicators
+            if ($('.modal-content:contains("added")').length ||
+                $('.modal-content:contains("cart")').length ||
+                $('.alert-success').length ||
+                $('button#addToStay').length === 0 && reservationAttempted) {
+                
+                if (!reservationSuccess) {
+                    reservationSuccess = true;
+                    console.log('Reservation may have succeeded!');
+                    $('span#status').html('<strong style="color:#1a5632;">POSSIBLY SUCCESSFUL - CHECK CART!</strong>');
+                    $('div#topbanner').css('background-color', '#90EE90');
+                    // Play a sound to alert the user
+                    playSuccessSound();
+                }
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // Also check for URL changes to cart
+        setInterval(() => {
+            if (window.location.href.includes('/cart') && reservationAttempted && !reservationSuccess) {
+                reservationSuccess = true;
+                console.log('Redirected to cart - reservation likely succeeded!');
+            }
+        }, 500);
+    }
+
+    function playSuccessSound()
+    {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {
+            console.log('Could not play success sound:', e);
+        }
+    }
+
+    function formatTargetTime()
+    {
+        const hour = CONFIG.targetHour;
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${CONFIG.targetMinute.toString().padStart(2, '0')}:${CONFIG.targetSecond.toString().padStart(2, '0')} ${ampm}`;
     }
 
     function loadUI(){
-        $('body').prepend('<div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;"><div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div><div id="notice"><ol><li>Make sure you are logged into your <a href="/login" target="_blank">account</a>.</li><li id="visiblecheck">Make sure this tab / window is visible at all times or the timmer will not work.</li><li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li><li>Make sure to be on the computer by 7:05 AM <i>'+timezone+'</i> to complete the <a href="/cart" target="_blank">reservation</a>.</li></ol> <ul><li> System Time: <span id="clock">00:00:00 AM</span>.</li> <li>Will Fire At: <strong>7:00:00 AM</strong> <i>'+timezone+'</i>.</li></ul></div> </div>');
+        const targetTime = formatTargetTime();
+        const windowInfo = `(${CONFIG.preFireSeconds}s early to ${CONFIG.postFireSeconds}s late)`;
+        
+        $('body').prepend(`
+            <div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;">
+                <div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div>
+                <div id="notice">
+                    <ol>
+                        <li>Make sure you are logged into your <a href="/login" target="_blank">account</a>.</li>
+                        <li id="visiblecheck">Make sure this tab / window is visible at all times or the timer will not work.</li>
+                        <li>Make sure to disable any windows/mac computer sleep mode / lock screen.</li>
+                        <li>Make sure to be on the computer by 7:05 AM <i>${CONFIG.timezone}</i> to complete the <a href="/cart" target="_blank">reservation</a>.</li>
+                    </ol>
+                    <ul>
+                        <li>System Time: <span id="clock">00:00:00.000</span></li>
+                        <li>Will Fire At: <strong>${targetTime}</strong> <i>${CONFIG.timezone}</i> ${windowInfo}</li>
+                        <li>Click Attempts: <span id="clickcount">0</span> / ${CONFIG.maxClicks}</li>
+                        <li>Status: <span id="status"><strong>WAITING</strong></span></li>
+                    </ul>
+                </div>
+            </div>
+        `);
     }
 
 })();
