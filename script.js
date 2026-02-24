@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      20260224.2
+// @version      20260224.3
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -79,6 +79,7 @@
         clock();
         selectCampSite();
         watchForSuccess();
+        watchForErrors();
         watchForUIRemoval();
     }
 
@@ -220,6 +221,54 @@
                 clickEvent();
             }
         }, CONFIG.checkInterval);
+    }
+
+    function watchForErrors()
+    {
+        // Watch for error/warning messages on the page
+        setInterval(() => {
+            let errorMessages = [];
+            
+            // Check for warning-box class
+            $('.warning-box').each(function() {
+                const text = $(this).text().trim();
+                if (text && errorMessages.indexOf(text) === -1) {
+                    errorMessages.push(text);
+                }
+            });
+            
+            // Check for alertBoxMessages-sidebarRestrictiveMessageHeading
+            const alertBox = $('#alertBoxMessages-sidebarRestrictiveMessageHeading');
+            if (alertBox.length) {
+                // Get all li elements within the alert box
+                alertBox.find('li').each(function() {
+                    const text = $(this).text().trim();
+                    if (text && errorMessages.indexOf(text) === -1) {
+                        errorMessages.push(text);
+                    }
+                });
+            }
+            
+            // Update UI with errors if any found
+            if (errorMessages.length > 0) {
+                ensureUI();
+                let errorHtml = '<div id="errorMessages" style="background-color:#ffebee;border:2px solid #c62828;padding:10px;margin-top:10px;">';
+                errorHtml += '<strong style="color:#c62828;">⚠️ ERRORS DETECTED:</strong><ul style="margin:5px 0;padding-left:20px;">';
+                errorMessages.forEach(msg => {
+                    errorHtml += `<li style="color:#c62828;">${msg}</li>`;
+                });
+                errorHtml += '</ul></div>';
+                
+                // Remove old error messages and add new ones
+                $('#topbanner #errorMessages').remove();
+                $('#topbanner #notice').after(errorHtml);
+                
+                console.log('Errors detected:', errorMessages);
+            } else {
+                // Remove error messages if they no longer exist
+                $('#topbanner #errorMessages').remove();
+            }
+        }, 500);
     }
 
     function watchForSuccess()
