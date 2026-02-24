@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      20260215.2
+// @version      20260224.1
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -285,7 +285,7 @@
         const windowInfo = `(${CONFIG.preFireSeconds}s early to ${CONFIG.postFireSeconds}s late)`;
         
         $('body').prepend(`
-            <div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;">
+            <div id="topbanner" style="padding:10px;border-bottom:5px solid #ff0000;position:sticky;top:0;z-index:9999;background-color:#ffffff;">
                 <div id="pleaseselect" style="font-size:30px;font-weight:bold;text-align:center;"></div>
                 <div id="notice">
                     <ol>
