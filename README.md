@@ -97,7 +97,6 @@ The script displays a banner at the top of the page showing:
 ## Files
 
 - `script.js` - Main Tampermonkey userscript
-- `HackTimer.silent.min.js` - Timer workaround library (currently unused)
 - `README.md` - This file
 
 ## Author
