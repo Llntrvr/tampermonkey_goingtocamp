@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      20260224.4
+// @version      20260224.5
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -252,8 +252,7 @@
             // Update Status with errors if any found
             if (errorMessages.length > 0 && !reservationSuccess) {
                 ensureUI();
-                const errorText = errorMessages.join(' | ');
-                $('span#status').html(`<strong style="color:#c62828;">ERROR: ${errorText}</strong>`);
+                $('span#status').html('<strong style="color:#c62828;">SITE ERROR DETECTED</strong>');
                 console.log('Errors detected:', errorMessages);
             }
         }, 500);
