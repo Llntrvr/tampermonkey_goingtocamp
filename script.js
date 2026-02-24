@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Going to Camp Auto Click
 // @namespace    https://washington.goingtocamp.com
-// @version      20260224.3
+// @version      20260224.4
 // @description  Try to auto reserve campsites
 // @author       Trevor Dilley
 // @match        https://washington.goingtocamp.com/create-booking/*
@@ -249,24 +249,12 @@
                 });
             }
             
-            // Update UI with errors if any found
-            if (errorMessages.length > 0) {
+            // Update Status with errors if any found
+            if (errorMessages.length > 0 && !reservationSuccess) {
                 ensureUI();
-                let errorHtml = '<div id="errorMessages" style="background-color:#ffebee;border:2px solid #c62828;padding:10px;margin-top:10px;">';
-                errorHtml += '<strong style="color:#c62828;">⚠️ ERRORS DETECTED:</strong><ul style="margin:5px 0;padding-left:20px;">';
-                errorMessages.forEach(msg => {
-                    errorHtml += `<li style="color:#c62828;">${msg}</li>`;
-                });
-                errorHtml += '</ul></div>';
-                
-                // Remove old error messages and add new ones
-                $('#topbanner #errorMessages').remove();
-                $('#topbanner #notice').after(errorHtml);
-                
+                const errorText = errorMessages.join(' | ');
+                $('span#status').html(`<strong style="color:#c62828;">ERROR: ${errorText}</strong>`);
                 console.log('Errors detected:', errorMessages);
-            } else {
-                // Remove error messages if they no longer exist
-                $('#topbanner #errorMessages').remove();
             }
         }, 500);
     }
